@@ -1,8 +1,13 @@
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public abstract class Conta implements ITaxas{
+public abstract class Conta implements ITaxas, Serializable {
+
+    final private static long serialVertionUID = 1L;
+
+    private int agencia;
 
     private int numero;
 
@@ -14,13 +19,14 @@ public abstract class Conta implements ITaxas{
 
     private ArrayList<Operacao> operacoes;
 
-    private int proximaOperacao;
+    private transient int proximaOperacao;
 
-    private static int totalContas = 0;
+    private transient static int totalContas = 0;
 
     public static int cont=0;
 
-    public Conta(int numero, Cliente dono, double saldo, double limite) {
+    public Conta(int agencia, int numero, Cliente dono, double saldo, double limite) {
+        this.agencia = agencia;
         this.numero = numero;
         this.dono = dono;
         this.saldo = saldo;
@@ -30,6 +36,77 @@ public abstract class Conta implements ITaxas{
         this.proximaOperacao = 0;
 
         Conta.totalContas++;
+    }
+
+    public void salvarDados()  {
+        String fileName = this.agencia + "-" + this.numero + ".ser";
+        FileOutputStream file = null;
+        ObjectOutputStream object = null;
+
+        try{
+            file = new FileOutputStream(fileName);
+            object =new ObjectOutputStream(file);
+            object.writeObject(this);
+            System.out.println("Dados da conta salvos!");
+        }catch (IOException x) {
+            System.err.println("Erro ao salvar os dados :(");
+            System.err.println(x.getMessage());
+        }finally {
+            if(object != null){
+                try{
+                    object.close();
+                }catch (IOException x){
+                    System.err.println("Erro ao salvar os dados :(");
+                    System.err.println(x.getMessage());
+                }
+            }
+            if(file != null) {
+                try{
+                    file.close();
+                }catch (IOException x){
+                    System.err.println("Erro ao salvar os dados :(");
+                    System.err.println(x.getMessage());
+                }
+            }
+
+        }
+
+    }
+
+    public static Conta pegarDados(int numero, int agencia){
+        String fileName = agencia + "-" + numero + ".ser";
+        FileInputStream file = null;
+        ObjectInputStream object = null;
+
+        try{
+            file = new FileInputStream(fileName);
+            object =new ObjectInputStream(file);
+            Conta conta = ((Conta) object.readObject());
+            System.out.println("Dados da conta resgatados!");
+            return conta;
+        }catch (IOException  | ClassNotFoundException x) {
+            System.err.println("Erro ao resgatar os dados :(");
+            System.err.println(x.getMessage());
+        }finally{
+            if(object != null){
+                try{
+                    object.close();
+                }catch (IOException x){
+                    System.err.println("Erro ao resgatar os dados :(");
+                    System.err.println(x.getMessage());
+                }
+            }
+            if(file != null){
+                try{
+                    file.close();
+                }catch (IOException x){
+                    System.err.println("Erro ao resgatar os dados :(");
+                    System.err.println(x.getMessage());
+                }
+
+            }
+        }
+        return null;
     }
 
 
@@ -158,6 +235,10 @@ public abstract class Conta implements ITaxas{
 
     public void setDono(Cliente dono) {
         this.dono = dono;
+    }
+
+    public  int getAgencia() {
+        return agencia;
     }
 
     public abstract boolean setLimite(double limite) throws IllegalArgumentException;
