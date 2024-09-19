@@ -1,7 +1,9 @@
-public class ContaPoupanca extends Conta implements ITaxas{
+import java.io.Serializable;
 
-    public ContaPoupanca(int numero, Cliente dono, double saldo, double limite) {
-        super(numero, dono, saldo, limite);
+public class ContaPoupanca extends Conta implements ITaxas {
+
+    public ContaPoupanca(int agencia, int numero, Cliente dono, double saldo, double limite) {
+        super(agencia, numero, dono, saldo, limite);
     }
     public boolean setLimite(double limite){
         if (limite < 100 || limite >1000) {
