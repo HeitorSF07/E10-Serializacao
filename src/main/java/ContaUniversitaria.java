@@ -1,7 +1,7 @@
 public class ContaUniversitaria extends Conta implements ITaxas{
 
-    public ContaUniversitaria(int numero, Cliente dono, double saldo, double limite) {
-        super(numero, dono, saldo, limite);
+    public ContaUniversitaria(int agencia, int numero, Cliente dono, double saldo, double limite) {
+        super(agencia, numero, dono, saldo, limite);
     }
     public boolean setLimite(double limite){
         if (limite < 0 || limite >500) {
