@@ -1,7 +1,9 @@
-public class ContaCorrente extends Conta implements ITaxas{
-    public ContaCorrente(int numero, Cliente dono, double saldo, double limite) {
+import java.io.Serializable;
 
-        super(numero, dono, saldo, limite);
+public class ContaCorrente extends Conta implements ITaxas {
+    public ContaCorrente(int agencia, int numero, Cliente dono, double saldo, double limite) {
+
+        super(agencia, numero, dono, saldo, limite);
     }
     public boolean setLimite(double limite){
         if (limite < -100) {
